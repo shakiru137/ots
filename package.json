@@ -24,5 +24,30 @@
     "socket.io": "^4.8.3",
     "twilio": "^5.13.1",
     "zod": "^4.3.6"
+  },
+  "name": "otp",
+  "description": "---",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://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@github.com/shakiru137/otp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shakiru137/otp/issues"
+  },
+  "homepage": "https://github.com/shakiru137/otp#readme",
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "@types/pg": "^8.20.0",
+    "nodemon": "^3.1.14",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.2"
   }
 }
