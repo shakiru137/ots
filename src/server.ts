@@ -6,6 +6,8 @@ import { db } from './services/postgres'
 import { redis } from './services/redis'
 import { registerSocketHandlers } from './services/socket'
 import { authRoutes } from './routes/auth'
+import { sosRoutes } from './routes/sos'
+import { startBatchWriter } from './services/batchWriter'
 import { env } from './config/env'
 
 const app = Fastify({ logger: true })
@@ -16,6 +18,7 @@ app.register(fjwt, { secret: env.JWT_SECRET })
 
 // Routes
 app.register(authRoutes)
+app.register(sosRoutes)
 
 // Socket.io
 const io = new Server(app.server, { cors: { origin: '*' } })
@@ -26,7 +29,9 @@ app.get('/health', async () => ({ status: 'ok' }))
 
 // Start
 db.query('SELECT NOW()').then(() => console.log('PostgreSQL connected'))
+redis.on('connect', () => console.log('Redis connected'))
 
 app.listen({ port: env.PORT }, (err) => {
   if (err) throw err
+  startBatchWriter()
 })
