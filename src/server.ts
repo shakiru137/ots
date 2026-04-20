@@ -37,3 +37,17 @@ app.listen({ port: env.PORT }, (err) => {
   if (err) throw err
   startBatchWriter()
 })
+
+// GET route for '/'
+app.get('/', async (request, reply) => {
+  return reply.type('text/html').send(`
+    <html>
+      <head>
+        <title>OTS</title>
+      </head>
+      <body style="display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;">
+        <h1>OTS APPLICATION</h1>
+      </body>
+    </html>
+  `)
+})

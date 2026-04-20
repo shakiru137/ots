@@ -204,3 +204,98 @@ When an SOS is triggered, the system enters **“War Room Mode”**.
   - High concurrency
 
 ---
+
+
+---
+
+# OTS Project - Setup & Execution Guide
+
+This document outlines the steps to set up the environment, handle Docker permissions, and run the OTS application services.
+
+## 🛠 Prerequisites
+
+* **Node.js** (v18+ recommended)
+* **Docker** & **Docker Compose**
+* **PostgreSQL / PostGIS** (Managed via Docker)
+* **Redis Stack** (Managed via Docker)
+
+---
+
+## 🚀 Getting Started
+
+### 1. Fix Docker Permissions (Linux/WSL)
+If you encounter `Permission denied` when running Docker commands, you must grant your user the necessary rights.
+
+```bash
+# Add your user to the docker group
+sudo usermod -aG docker $USER
+
+# Apply group changes immediately (avoids logout/login)
+newgrp docker
+
+# Verify docker is accessible
+docker ps
+```
+
+### 2. Infrastructure Setup (Database & Redis)
+The project relies on Docker for its database and cache.
+
+**Option A: Running in the background (Recommended)**
+This keeps your terminal free for the next steps.
+```bash
+docker-compose up --build -d
+```
+
+**Option B: Running with live logs**
+If you run this, **you must open a second terminal tab/window** to run the application commands.
+```bash
+docker-compose up --build
+```
+
+### 3. Database Migrations & Seeding
+Once the containers are up and the database is ready to accept connections (check logs for `database system is ready`):
+
+```bash
+# Run latest migrations
+npx knex migrate:latest
+
+# Run seed data
+npx knex seed:run
+```
+
+### 4. Running the Application
+Ensure you are in the project root directory.
+
+```bash
+# Start the development server
+npm run dev
+```
+
+The server should start at `http://127.0.0.1:3000`.
+
+---
+
+## 🔍 Troubleshooting
+
+### `ECONNREFUSED 127.0.0.1:5432`
+If the app crashes with this error:
+1. **Check Docker Status:** Ensure the Postgres container is actually running (`docker ps`).
+2. **Wait for Init:** Postgres takes a few seconds to initialize PostGIS extensions on the first boot. Wait for the "ready to accept connections" log.
+3. **Port Conflicts:** Ensure you don't have a local PostgreSQL service running on your host machine that is hogging port 5432.
+
+### Zombie Processes
+If you see errors about the port being in use or weird connection issues, clear out old Node processes:
+```bash
+pkill node
+```
+
+---
+
+## 📁 Project Summary
+* **Postgres:** Port 5432
+* **Redis:** Port 6379
+* **API:** Port 3000
+
+---
+
+I added the `-d` (detached) flag to the main command since it's usually easier than managing two terminal windows. Does the application connect to the DB now, or are you still seeing that `ECONNREFUSED` error?
